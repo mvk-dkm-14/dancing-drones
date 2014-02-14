@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 
 import dancingdrones.common.Protocol;
 import dancingdrones.common.Settings;
@@ -49,19 +50,24 @@ public class DroneServerThread implements Runnable {
 		Settings.printDebug("Waiting for client INIT");
 		// Wait for incoming data from the client
 		//cPacket = cIn.readLine();
-		cIn.read(cPacket, 0, 21);
+		cIn.read(cPacket);
+		Settings.printDebug("Recieved: " + cPacket[0]);
 		// Check if it's an INIT request
-		if(Protocol.getPacketType(cPacket) == Protocol.INIT ) {
+		if(cPacket[0] == Protocol.var.INIT + Protocol.var.I_REQUEST) {
+//		if(	Protocol.getPacketType(cPacket) == Protocol.var.INIT &&
+//			Protocol.getSelection(cPacket) == Protocol.var.REQUEST) {
 			// Right init message!
-			Settings.printDebug("INIT recieved");
+			Settings.printDebug("INIT REQUEST recieved");
 			// Answer the client that we want to continue
-			cOut.write("IOK".getBytes());
+			//cOut.write(Protocol.initResponse(true));
+			cOut.write(Protocol.var.INIT + Protocol.var.I_OK);
 			// Send everything in the buffer and clear it
 			cOut.flush();
 		} else {
 			Settings.printDebug("Non INIT recieved, terminating connection");
 			// Send quit message to the client
-			cOut.write(Protocol.QUIT);
+//			cOut.write(Protocol.initResponse(false));
+			cOut.write(Protocol.var.INIT + Protocol.var.I_FAILED);
 			cOut.flush();
 			// Close the connection to the client
 			clientSocket.close();
@@ -74,10 +80,10 @@ public class DroneServerThread implements Runnable {
 		//Main client loop
 		boolean running = true;
 		while(running){
-			// Do we have any incoming data?
-			if(cIn.available() > 20){
-				cIn.read(cPacket, 0, 21);
-			}
+			Settings.printDebug("Main loop reached");
+			
+			cOut.write(Protocol.sendQuit());
+			running = false;
 		}
 		
 		Settings.printDebug("End of program reached, terminating");
