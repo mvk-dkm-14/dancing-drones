@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
  * 
  * Main Functions:
  * I	: Initialize
- * L	: Login
+ * CON	: Connect drone.
  * C	: Control drone(s)
  * R	: Request info (updates)
  * Q	: Quit
@@ -48,108 +48,229 @@ import java.nio.ByteBuffer;
  */
 public class Protocol {
 
-	public static class var {
-		// Packet sizes:
-		public static final byte INIT_SIZE	=	1;		
+	/**
+	 * Stores all mask values relevant to the protocol
+	 * @author Rodoo
+	 */
+	public static class m {
+		public static final byte TYPE 	= 	(byte)0xE0; // 0xE0, 1110 0000
+		public static final byte SELECT	=	(byte)0x18; // 0x18, 0001 1000
+		public static final byte COMMAND= 	(byte)0x07; // 0x07, 0000 0111
+	}
+	
+	/**
+	 * Stores the sizes of the different packets from the client
+	 * @author Rodoo
+	 */
+	public static class s {
+		public static final byte INIT		=	1;
+		public static final byte CONNECT	=	2;
+		public static final byte ID			=	2;
+		public static final byte C_MOVE		=	17;
+		public static final byte C_TAKEOFF	=	2;
+		public static final byte C_LAND		=	2;
+		public static final byte C_EMERGENCY	=	2;
+		public static final byte C_TESTFLIGHT	=	2;
+		public static final byte QUIT		=	1;
+	}
+	
+	/**
+	 * Stores the indexes of different values.
+	 * @author Rodoo
+	 */
+	public static class i {
+		public static final byte H_TYPE		=	0;
+		public static final byte H_SELECT	=	1;
+		public static final byte H_COMMAND	=	2;
 		
+		public static final byte DATA_OFFSET = 1;
+		
+	}
+	
+	/**
+	 * Stores the values of parts of the protocol
+	 * H_: Type
+	 * S_: Select
+	 * C_: Command
+	 * @author Rodoo
+	 */
+	public static class v {
 		// Main types:
-		public static final byte TYPE_MASK 	= 	(byte)0xE0; // 0xE0, 1110 0000
-		public static final byte INIT	 	= 	(byte)0x20; // 0x20, 0010 0000
-		public static final byte LOGIN	 	=	(byte)0x40; // 0x40, 0100 0000
-		public static final byte CONTROL 	=	(byte)0x60; // 0x60, 0110 0000
-		public static final byte REQUEST 	=	(byte)0x80; // 0x80, 1000 0000
-		public static final byte QUIT 	 	=	(byte)0xA0; // 0xA0, 1010 0000
+		//public static final byte M_TYPE 	= 	(byte)0xE0; // 0xE0, 1110 0000
+		public static final byte T_INIT	 	= 	(byte)0x20; // 0x20, 0010 0000
+		//public static final byte LOGIN	 =	(byte)0x40; // 0x40, 0100 0000
+		public static final byte T_CONNECT	=	(byte)0x40; // 0x40, 0100 0000
+		public static final byte T_CONTROL 	=	(byte)0x60; // 0x60, 0110 0000
+		public static final byte T_REQUEST 	=	(byte)0x80; // 0x80, 1000 0000
+		public static final byte T_QUIT 	=	(byte)0xA0; // 0xA0, 1010 0000
 		
 		// Init selection:	
-		public static final byte SELECT_MASK =	0x18; // 0x18, 0001 1000
+		//public static final byte M_SELECT		=	0x18; // 0x18, 0001 1000
 		
-		public static final byte I_FAILED	=	0x00; // 0x00, 0000 0000
-		public static final byte I_OK		=	0x08; // 0x08, 0000 1000
-		public static final byte I_REQUEST 	=	0x10; // 0x10, 0001 0000	
+		public static final byte S_I_FAILED		=	0x00; // 0x00, 0000 0000
+		public static final byte S_I_OK			=	0x08; // 0x08, 0000 1000
+		public static final byte S_I_REQUEST 	=	0x10; // 0x10, 0001 0000	
 		// Drone selection:							  // 0x18, 0001 1000
-		public static final byte C_SINGLE 	=	0x01; // 0x08, 0000 1000
-		public static final byte C_GROUP  	=	0x02; // 0x10, 0001 0000
-		public static final byte C_ALL 	  	=	0x03; // 0x18, 0001 1000
+		public static final byte S_D_SINGLE 	=	0x08; // 0x08, 0000 1000
+		public static final byte S_D_GROUP  	=	0x10; // 0x10, 0001 0000
+		public static final byte S_D_ALL 	  	=	0x18; // 0x18, 0001 1000
 		
 		// Drone commands:							  
-		public static final byte COMMAND_MASK = 0x07; // 0x07, 0000 0111
-		public static final byte TAKEOFF 	=	0x01; // 0x01, 0000 0001
-		public static final byte LAND 		=	0x02; // 0x02, 0000 0010
-		public static final byte MOVE		=	0x03; // 0x03, 0000 0101
-		public static final byte EMERGENCY	=	0x04; // 0x04, 0000 0100
-		public static final byte KILL 		=	0x05; // 0x05, 0000 0101
+		//public static final byte M_COMMAND	= 	0x07; // 0x07, 0000 0111
+		public static final byte C_TAKEOFF 		=	0x01; // 0x01, 0000 0001
+		public static final byte C_LAND 		=	0x02; // 0x02, 0000 0010
+		public static final byte C_MOVE			=	0x03; // 0x03, 0000 0101
+		public static final byte C_EMERGENCY	=	0x04; // 0x04, 0000 0100
+		public static final byte C_TESTFLIGHT	=	0x05; // 0x05, 0000 0101 
+	}
+	
+	public static byte[] extractHeader(byte h){
+		return ByteBuffer
+				.allocate(3)
+				.put(0, (byte)(h & m.TYPE))
+				.put(1, (byte)(h & m.SELECT))
+				.put(2, (byte)(h & m.COMMAND))
+				.array();
+	}
+	
+	/**
+	 * Returns the size of the packet given the packet header, aka first byte.
+	 * @param header
+	 * @return total size of the packet, including header. -1 if it's an unknown header.
+	 */
+	public static int getPacketSize(byte header){
+		// Extract fields from header
+		byte[] b = extractHeader(header);
 		
-		// Drone/Group ID:
-		public static final byte DATA_OFFSET = 2; 
-		
-	}	
+		int size = 0;
+		// Get the default size for our different headers
+		switch(b[i.H_TYPE]){	// Switch packet type
+		case v.T_INIT:			// INIT
+			size =  s.INIT;		// Return INIT packet size
+			break;
+		case v.T_CONNECT:		// Connect drone!
+			size = s.CONNECT;	
+			break;
+		case v.T_CONTROL:		// Control drone(s)!
+			switch(b[i.H_COMMAND]){
+			case(v.C_TESTFLIGHT):	
+				size = s.C_TESTFLIGHT; 
+				break;
+			case(v.C_MOVE):		
+				size = s.C_MOVE;		
+				break;
+			case(v.C_LAND):		
+				size = s.C_LAND;		// All drones
+				break;
+			case(v.C_TAKEOFF):	
+				size = s.C_TAKEOFF;		// All drones
+				break;
+			case(v.C_EMERGENCY):
+				size = s.C_EMERGENCY;			// All drones
+				break;
+			default:
+				Settings.printDebug("Unknown Control command: "+b[2]);
+				return -1;
+			}	
+			break;
+		case v.T_QUIT:				// Quit
+			return s.QUIT;
+		default:
+			Settings.printDebug("Unknown header received");
+			return -1;
+		}
+		// If it's not for all, the data field starts with id (one byte) 
+		if(b[i.H_COMMAND] == v.S_D_ALL) size--;
+		return size;
+	}
+	
+	public static byte[] sendTestFlightDrone(int id) {
+		return ByteBuffer
+				.allocate(2)
+				.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_TESTFLIGHT))
+				.put(1, (byte)id)
+				.array();
+	}
 	
 // ========================================================= //
 //							CLIENT							 //
 // ========================================================= //
 	
-	public static byte[] initRequest(){
+	public static byte[] sendInitRequest(){
 		return ByteBuffer
 				.allocate(1)
-				.put(0, (byte)(var.INIT + var.I_REQUEST))
+				.put(0, (byte)(v.T_INIT + v.S_I_REQUEST))
 				.array();
 	}
 	
-	public static byte[] takeoff(int id) {
+	public static byte[] sendConnectDrone(int id) {
 		return ByteBuffer
-					.allocate(3)
-					.put(0, (byte)(var.CONTROL + var.C_SINGLE))
+				.allocate(2)
+				.put(0, (byte)(v.T_CONNECT + v.S_D_SINGLE))
+				.put(1, (byte)id)
+				.array();
+	}
+	
+	public static byte[] sendTakeOff(int id) {
+		return ByteBuffer
+					.allocate(2)
+					.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_TAKEOFF))
 					.put(1, (byte)id)
-					.put(2, var.TAKEOFF)
 					.array();
 	}
 	
-	public static byte[] land(int id) {
+	public static byte[] sendLand(int id) {
 		return ByteBuffer
-					.allocate(3)
-					.put(0, (byte)(var.CONTROL + var.C_SINGLE))
+					.allocate(2)
+					.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_LAND))
 					.put(1, (byte)id)
-					.put(2, var.LAND)
+					.array();
+	}
+	
+	public static byte[] sendEmergency(int id){
+		return ByteBuffer
+					.allocate(2)
+					.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_EMERGENCY))
+					.put(1, (byte)id)
 					.array();
 	}
 
-	public static byte[] moveDrone(int id, float f, float x, float y, float z) {
+	public static byte[] sendMoveSingleDrone(int id, float lr, float fb, float vs, float as) {
 		//	ByteBuffer.allocate(x).put(a).put(b).array() = byte[];
 		return ByteBuffer
-					.allocate(19)		// Allocate the array
-					.put(0, (byte)(var.CONTROL + var.C_SINGLE))	// Header
+					.allocate(18)		// Allocate the array
+					.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_MOVE))	// Header
 					.put(1, (byte)id)	// Drone ID
-					.put(2, var.MOVE)	// Command
-					.putFloat(3, f)		// Data
-					.putFloat(7, x)		// Data
-					.putFloat(11, y)	// Data
-					.putFloat(15, z)	// Data
+					.putFloat(3, lr)	// Data
+					.putFloat(7, fb)	// Data
+					.putFloat(11, vs)	// Data
+					.putFloat(15, as)	// Data
 					.array();			// return the array
 
 	}
 	
 	
 // ======================================================== //
-//							SERVER
+//							SERVER							//
 //========================================================= //
 	
 	public static byte[] initResponse(boolean r){
 		if(r)
 			return ByteBuffer
 					.allocate(1)
-					.put((byte)(var.INIT + var.I_OK))
+					.put((byte)(v.T_INIT + v.S_I_OK))
 					.array();
 		else
 			return ByteBuffer
 					.allocate(1)
-					.put((byte)(var.INIT + var.I_FAILED))
+					.put((byte)(v.T_INIT + v.S_I_FAILED))
 					.array();	
 	}
 	
 	public static byte[] sendQuit(){
 		return ByteBuffer
 					.allocate(1)
-					.put((byte)var.QUIT)
+					.put((byte)v.T_QUIT)
 					.array();
 	}
 	
@@ -181,25 +302,5 @@ public class Protocol {
 					ByteBuffer.allocate(4).getFloat(i+12)};
 		
 		return r;
-		// Read the float values from raw bytes
-//		float f1 = (b[i+0] & 0xFF) 
-//				| ((b[i+1] & 0xFF) << 8) 
-//				| ((b[i+2] & 0xFF) << 16) 
-//				| ((b[i+3] & 0xFF) << 24);
-//		float f2 = (b[i+4] & 0xFF) 
-//				| ((b[i+5] & 0xFF) << 8) 
-//				| ((b[i+6] & 0xFF) << 16) 
-//				| ((b[i+7] & 0xFF) << 24);
-//		float f3 = (b[i+8] & 0xFF) 
-//				| ((b[i+9] & 0xFF) << 8) 
-//				| ((b[i+10] & 0xFF) << 16) 
-//				| ((b[i+11] & 0xFF) << 24);
-//		float f4 = (b[i+12] & 0xFF) 
-//				| ((b[i+13] & 0xFF) << 8) 
-//				| ((b[i+14] & 0xFF) << 16) 
-//				| ((b[i+15] & 0xFF) << 24);
-//		// Collect the floats in an array and return it
-//		float[] r = {f1, f2, f3, f4};
-//		return r;
 	}
 }
