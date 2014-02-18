@@ -1,4 +1,4 @@
-package dancingdrones.common;
+﻿package dancingdrones.common;
 
 public class Settings {
 	public static final boolean DBG = true;

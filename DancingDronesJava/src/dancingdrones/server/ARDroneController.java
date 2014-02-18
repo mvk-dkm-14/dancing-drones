@@ -1,4 +1,4 @@
-package dancingdrones.server;
+﻿package dancingdrones.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -23,26 +23,35 @@ public class ARDroneController {
 		drone = new ARDrone(ip);
 	}
 	
-	public void start() throws IOException{
+	/**
+	 * Connects to the drone, clear emergency signal, 
+	 * trims it and take off!
+	 * @throws IOException
+	 * @throws InterruptedException 
+	 */
+	public void takeOff() throws IOException, InterruptedException{
 		// Create ARDrone object,
 		// connect to drone and initialize it.
 		drone.connect();
 		drone.clearEmergencySignal();
-		
+			
 		// Wait until drone is ready
 		drone.waitForReady(CONNECT_TIMEOUT);
-	}
-	
-	public void takeOff() throws IOException{
-		start();
+		
 		// do TRIM operation
 		drone.trim();
 		
 		// Take off
 		System.err.println("Taking off");
 		drone.takeOff();
+		Thread.sleep(5000);
 	}
 	
+	/**
+	 * Lands the drone and disconnects from it.
+	 * @throws InterruptedException
+	 * @throws IOException
+	 */
 	public void land() throws InterruptedException, IOException{
 		System.err.println("Landing");
 		drone.land();
@@ -58,6 +67,14 @@ public class ARDroneController {
 		drone.sendEmergencySignal();
 	}
 	
+	/**
+	 * 
+	 * @param left_right_tilt
+	 * @param front_back_tilt
+	 * @param vertical_speed
+	 * @param angular_speed
+	 * @throws IOException
+	 */
 	public void move(	float left_right_tilt, float front_back_tilt, 
 						float vertical_speed, float angular_speed) throws IOException{
 		drone.move(left_right_tilt, front_back_tilt, vertical_speed, angular_speed);

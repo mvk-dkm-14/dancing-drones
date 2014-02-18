@@ -1,4 +1,4 @@
-package dancingdrones.server;
+ï»¿package dancingdrones.server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import dancingdrones.common.Protocol;
 import dancingdrones.common.Settings;
 
 /**
- * TODO INIT delen behöver förändras så att den utnyttjar den nya pakethanteringen
+ * TODO INIT delen behÃ¶ver fÃ¶rÃ¤ndras sÃ¥ att den utnyttjar den nya pakethanteringen
  * @author rodoo
  *
  */
