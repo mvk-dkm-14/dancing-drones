@@ -124,6 +124,11 @@ public class Protocol {
 		public static final byte C_TESTFLIGHT	=	0x05; // 0x05, 0000 0101 
 	}
 	
+	/**
+	 * Extracts the information from the header for easier comparison.
+	 * @param h the header to extract data from
+	 * @return byte[], where index 0=type, 1=select and 2=command
+	 */
 	public static byte[] extractHeader(byte h){
 		return ByteBuffer
 				.allocate(3)
