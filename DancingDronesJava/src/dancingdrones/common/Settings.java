@@ -9,6 +9,10 @@ public class Settings {
 	
 	//public static final int 	MAX_CONNECTED_DRONES = 4;
 	
+	public static final int 	CONNECT_TIMEOUT 		= 3000;
+	public static final int 	READ_UPDATE_DELAY_MS 	= 5;
+	
+	
 	
 	public static final void printDebug(String message) {
 		System.out.println("[DEBUG] " + message); }

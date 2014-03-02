@@ -14,9 +14,6 @@ import com.codeminders.ardrone.NavDataListener;
 import dancingdrones.common.Settings;
 
 public class ARDroneController implements NavDataListener, DroneStatusChangeListener {
-	private int CONNECT_TIMEOUT = 3000;
-	private int READ_UPDATE_DELAY_MS = 5;
-	
 	private long nextOut = 0;
 	
 	private AtomicBoolean ready = new AtomicBoolean(false);
@@ -52,7 +49,6 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
     private void startUpdateLoop() {
         Thread thread = new Thread(new Runnable()
         {
-
             @Override
             public void run()
             {
@@ -70,7 +66,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		try {
 			System.err.println("Connecting to the drone");
 			drone.connect();
-			drone.waitForReady(CONNECT_TIMEOUT);
+			drone.waitForReady(Settings.CONNECT_TIMEOUT);
 			drone.clearEmergencySignal();
 			System.err.println("Connected to the drone");
 			try {
@@ -88,7 +84,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 			        	// Not flying
 			        }
 			        try {
-			            Thread.sleep(READ_UPDATE_DELAY_MS);
+			            Thread.sleep(Settings.READ_UPDATE_DELAY_MS);
 			        } catch(InterruptedException e) {
 			            // Ignore
 			        }
