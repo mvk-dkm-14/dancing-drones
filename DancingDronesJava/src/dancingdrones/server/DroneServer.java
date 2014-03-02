@@ -25,8 +25,8 @@ public class DroneServer {
 	private LinkedList<byte[]> unread;
 	//private List<byte[]> unread;
 	private ArrayList<ARDroneController> drones;
-		
-	
+
+
 	/**
 	 * Creates a new DroneServerThread and runs it.
 	 * @param args ignored
@@ -41,19 +41,19 @@ public class DroneServer {
 		Settings.printDebug("Setting up variables");
 		unread = new LinkedList<byte[]>();
 		drones = new ArrayList<ARDroneController>();	
-		
+
 		try {
 			Settings.printInfo("Starting server");		
 			Settings.printDebug("Creating listen socket");
 			// Setting up a socket to handle the client connection on the default port
 			ServerSocket listenSocket = new ServerSocket(Settings.LISTEN_PORT);
-			
+
 			Settings.printInfo("Waiting for client to connect..");
 			// Wait for an incoming connection on the socket 
 			Socket clientSocket = listenSocket.accept();
 			// Someone connected
 			Settings.printInfo("Client connected! IP: "+ clientSocket.getInetAddress());
-			
+
 			Settings.printDebug("Setting up socket streams");
 			// Set up our desired buffers to the remote client, cIn(clientIn) and cOut
 			cIn = clientSocket.getInputStream();
@@ -61,7 +61,7 @@ public class DroneServer {
 			// These below are if we want to send strings instead of bytes
 			//cIn = new BufferedReader(new InputStreamReader(clientSocket.getInputStream().));
 			//cOut = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-					
+
 			Settings.printDebug("Waiting for client INIT");
 			// Wait for incoming data from the client
 			byte[] cPacket = new byte[20];
@@ -80,7 +80,7 @@ public class DroneServer {
 				// Send quit message to the client
 				cOut.write(Protocol.v.T_INIT + Protocol.v.S_I_FAILED);
 				cOut.flush();
-				
+
 				// Close the connection to the client
 				clientSocket.close();
 				Settings.printDebug("Client disconnected");
@@ -88,11 +88,11 @@ public class DroneServer {
 				listenSocket.close();
 				Settings.printDebug("Shutting down server..");
 			}
-			
+
 			Settings.printDebug("Creating a listening thread and starts it.");
 			Thread listenThread = new Thread(new DroneServerListener(cIn, unread));
 			listenThread.start();		// .start() creates a new thread, .run just runs the method
-			
+
 			//Main client loop
 			Settings.printDebug("Main loop reached");
 			boolean running = true;
@@ -105,15 +105,15 @@ public class DroneServer {
 					// Packets exists! Fetch the oldest
 					byte[] p = unread.pop();
 					Settings.printDebug("Recieved packet from client, header: "+ (int)p[0] +" Size: "+p.length);
-					
+
 					byte[] h = Protocol.extractHeader(p[0]);
 					switch(h[Protocol.i.H_TYPE]){
 					// Connect drone Packet.
 					case(Protocol.v.T_CONNECT):		// Connect type of packet.
 						int id = p[Protocol.i.DATA_OFFSET];
-						Settings.printDebug("Connect Drone: "+ id);
-						drones.add(new ARDroneController(id));
-						break;
+					Settings.printDebug("Connect Drone: "+ id);
+					drones.add(new ARDroneController(id));
+					break;
 					case(Protocol.v.T_CONTROL): // Protocol.v.C_SINGLE + Protocol.v.TESTFLIGHT)):
 						switch(h[Protocol.i.H_COMMAND]){
 						case(Protocol.v.C_MOVE):
@@ -138,11 +138,11 @@ public class DroneServer {
 							drones.get(p[Protocol.i.DATA_OFFSET]-1).testFlight();
 							break;						
 						}
-						break;
+					break;
 					case((byte)(Protocol.v.T_QUIT)):
 						Settings.printDebug("Client sent Quit");
-						running = false;
-						break;
+					running = false;
+					break;
 					default:
 						Settings.printDebug("unknown header recieved, value: "+p[0]);
 					}
@@ -159,50 +159,83 @@ public class DroneServer {
 	/**
 	 * Listen thread to the server. So we're not affected by read blocks on sockets.
 	 * @author rodoo
+	 * 
+	 * Make a method out of this and make this beutiful code instead?
+	private void startUpdateLoop() {
+        Thread thread = new Thread(new Runnable() 
+        {
+            @Override
+            public void run()
+            {
+                updateLoop();
+            }
+        });
+        thread.setName("ARDrone Control Loop");
+        thread.start();
+    }
+
 	 *
 	 */
 	public class DroneServerListener implements Runnable {
-		private InputStream in;
-		private LinkedList<byte[]> unread;
-		
+		private static final int BUFFER_SIZE = 20;
+		private final InputStream in;
+		private final LinkedList<byte[]> unread;
+
 		public DroneServerListener(InputStream in, LinkedList<byte[]> unread) {
 			this.in = in;
 			this.unread = unread;
 		}
 
+		/**
+		 * Listens after incoming traffic on the given socket until it receives 
+		 * an interrupt.
+		 */
 		@Override
 		public void run() {
 			Settings.printDebug("ListenThread started.");
-			try {
-				while(true) {
-					byte[] b = new byte[20];
-					
-					int bytesRead = in.read(b, 0, 1);
-					if(bytesRead == 1){							// if packet received
-						Settings.printDebug("Something received?");
-						int packetSize = Protocol.getPacketSize(b[0]);
-						if(packetSize > -1){
-							byte[] packet = new byte[packetSize];
-							packet[0] = b[0];
-							bytesRead = in.read(b, 0, packetSize-1);
-							Settings.printDebug("bytesRead (2nd):"+ bytesRead);
-							if(bytesRead == packetSize-1){
-								for(int i=1; i<packetSize; i++){
-									packet[i] = b[i-1];
-								}
+
+			byte[] b = new byte[BUFFER_SIZE];
+
+			// Loop until we receive an interrupt
+			while(!Thread.currentThread().isInterrupted()) {
+				try {									
+					// Read the first byte (header) and store it in the first index of b
+					// Blocks until data is received.
+					int bRead = in.read(b, 0, 1);
+					if(bRead == 1){			
+						// Packet received!
+						Settings.printDebug("Something received!");
+						// From the header get how big the packet should be.
+						int pSize = Protocol.getPacketSize(b[0]);
+						if(pSize > -1){
+							// Valid packet received
+							byte[] p = new byte[pSize];
+							//packet[0] = b[0];
+							// Read the rest of the packet into the buffer
+							bRead = in.read(b, 1, pSize-1);
+							Settings.printDebug("bytesRead (2nd):"+ bRead);
+							if(bRead == pSize-1){
+								// Correct number of bytes read!
+								// Copy to new array to store in unread
+								for(int i=0; i<pSize; i++)
+									p[i] = b[i];
+								unread.add(p);
+								Settings.printDebug("Added packet with header: "+ p[0]);
 							} else
 								Settings.printDebug("Error reading data, wrong number bytes read.");
-							Settings.printDebug("Added packet with header: "+ packet[0]);
-							unread.add(packet);
-						} else 
+						} else
 							Settings.printDebug("Unknown header received: "+ b[0]);
 					} else 
-						Settings.printDebug("Nothing to read..");
-				}			
-			} catch (IOException e) {
-				Settings.printDebug("ListenThread died with the following exception:");
-				e.printStackTrace();
+						Settings.printDebug("Nothing to read.. (or EOF??)");			
+				} catch (IOException e) {
+					// Something happened to our InputStream, probably socket closed.
+					// Signal to the thread to stop (is this needed?)
+					Thread.currentThread().interrupt();
+					Settings.printDebug("ListenThread died with the following exception:");
+					e.printStackTrace();
+				}
 			}
-		}		
+			Settings.printDebug("ListenThread stopped.");
+		}
 	}
 }
