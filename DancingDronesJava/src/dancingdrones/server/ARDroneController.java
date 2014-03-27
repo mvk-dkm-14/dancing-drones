@@ -27,6 +27,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	
 	//private AtomicReference<ARDrone> drone;
 	private ARDrone drone;
+	private NavData nd;
 	private int id;
 	private float targetHeight;
 	private int group;
@@ -34,16 +35,16 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 
 	
 	public ARDroneController(int id) throws IOException, InterruptedException{
-		Settings.printDebug("Creating drone with ip ."+ id);
+		Settings.printDebug("[ARDroneController] Creating drone with ip ."+ id);
 		this.id = id;
 		drone = new ARDrone(InetAddress.getByName(Settings.IP_NET + id));
-		//drone = new AtomicReference<ARDrone>(new ARDrone(InetAddress.getByName(Settings.IP_NET + id)));
+//		drone = new AtomicReference<ARDrone>(new ARDrone(InetAddress.getByName(Settings.IP_NET + id)));
 		
 		// Tell the drone to send updates to this instance (object)
 		drone.addStatusChangeListener(this);
 		drone.addNavDataListener(this);
-		startUpdateLoop();
-		//initDrone();
+//		startUpdateLoop();
+//		initDrone();
 	}
 	
     private void startUpdateLoop() {
@@ -64,11 +65,11 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 			return;
 		running.set(true);
 		try {
-			System.err.println("Connecting to the drone");
+			System.err.println("[ARDroneController] Connecting to the drone");
 			drone.connect();
 			drone.waitForReady(Settings.CONNECT_TIMEOUT);
 			drone.clearEmergencySignal();
-			System.err.println("Connected to the drone");
+			System.err.println("[ARDroneController] Connected to the drone");
 			try {
 				while(running.get()){
 					if(flying.get()) {
@@ -111,10 +112,10 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		
 		// Wait until drone is ready
 		//drone.waitForReady(CONNECT_TIMEOUT);
-		Settings.printDebug("Waiting for drone to be ready..");
+		Settings.printDebug("[ARDroneController] Waiting for drone to be ready..");
 		while(!ready.get())
 				Thread.sleep(100);
-		Settings.printDebug("Drone is now Ready!");
+		Settings.printDebug("[ARDroneController] Drone is now Ready!");
 				
 	}
 	
@@ -178,7 +179,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		Thread.sleep(1000);
 		
 		// Wait until drone is ready
-		drone.waitForReady(CONNECT_TIMEOUT);
+		drone.waitForReady(Settings.CONNECT_TIMEOUT);
 		Thread.sleep(1000);
 		
 		// do TRIM operation
@@ -219,9 +220,10 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	public void navDataReceived(NavData nd) {
 		if(nd.getSequence() < lastSequence) {
 			// Old data received
-			Settings.printDebug("ARDroneController: Received old navdata");
+			Settings.printDebug("[ARDroneController] Received old navdata");
 			return;
 		}
+		this.nd = nd;
 		// Fresh data received
 		this.flying.set(nd.isFlying());
 		

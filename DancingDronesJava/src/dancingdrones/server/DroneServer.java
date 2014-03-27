@@ -8,6 +8,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+
 import dancingdrones.common.Protocol;
 import dancingdrones.common.Settings;
 
@@ -25,6 +28,7 @@ public class DroneServer {
 	private LinkedList<byte[]> unread;
 	//private List<byte[]> unread;
 	private ArrayList<ARDroneController> drones;
+	private static Logger logger = Logger.getLogger(DroneServer.class.getName());
 
 
 	/**
@@ -32,6 +36,7 @@ public class DroneServer {
 	 * @param args ignored
 	 */
 	public static void main(String[] args) {
+		PropertyConfigurator.configure("log4j.properties");
 		Settings.printDebug("Creating server object");
 		DroneServer s = new DroneServer();
 		s.start();
@@ -98,10 +103,11 @@ public class DroneServer {
 			boolean running = true;
 			while(running){
 				// Do we have any incomming packets from the client?
-				if(unread.size() < 1) {
-					//Settings.printDebug("Nothing to do, sleeping for 500ms");
-					Thread.sleep(33);
-				} else {
+//				if(unread.size() < 1) {
+//					//Settings.printDebug("Nothing to do, sleeping for 500ms");
+//					Thread.sleep(33);
+//				} else {
+				if(unread.size() > 0) {
 					// Packets exists! Fetch the oldest
 					byte[] p = unread.pop();
 					Settings.printDebug("Recieved packet from client, header: "+ (int)p[0] +" Size: "+p.length);
@@ -111,9 +117,9 @@ public class DroneServer {
 					// Connect drone Packet.
 					case(Protocol.v.T_CONNECT):		// Connect type of packet.
 						int id = p[Protocol.i.DATA_OFFSET];
-					Settings.printDebug("Connect Drone: "+ id);
-					drones.add(new ARDroneController(id));
-					break;
+						Settings.printDebug("Connect Drone: "+ id);
+						drones.add(new ARDroneController(id));
+						break;
 					case(Protocol.v.T_CONTROL): // Protocol.v.C_SINGLE + Protocol.v.TESTFLIGHT)):
 						switch(h[Protocol.i.H_COMMAND]){
 						case(Protocol.v.C_MOVE):
@@ -145,8 +151,12 @@ public class DroneServer {
 					break;
 					default:
 						Settings.printDebug("unknown header recieved, value: "+p[0]);
-					}
-				}		
+					} // Switch
+				} // Else
+				for(ARDroneController drone : drones) {
+					drone.toString();
+					
+				}
 			}			
 			Settings.printDebug("End of program reached, terminating");
 			clientSocket.close();
