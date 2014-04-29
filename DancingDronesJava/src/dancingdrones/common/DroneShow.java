@@ -1,6 +1,6 @@
+package dancingdrones.common;
 import java.sql.Time;
 
-import dancingdrones.common.Protocol;
 
 
 public class DroneShow {
