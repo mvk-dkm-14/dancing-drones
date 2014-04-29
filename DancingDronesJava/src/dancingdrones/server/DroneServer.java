@@ -73,17 +73,17 @@ public class DroneServer {
 			cIn.read(cPacket);
 			Settings.printDebug("Recieved: " + cPacket[0]);
 			// Check if it's an INIT request
-			if(cPacket[0] == Protocol.v.T_INIT + Protocol.v.S_I_REQUEST) {
+			if(cPacket[0] == Protocol.Value.T_INIT + Protocol.Value.S_I_REQUEST) {
 				// Right init message!
 				Settings.printDebug("INIT REQUEST recieved");
 				// Answer the client that we want to continue
 				// Send everything in the buffer and clear it
-				cOut.write(Protocol.v.T_INIT + Protocol.v.S_I_OK);
+				cOut.write(Protocol.Value.T_INIT + Protocol.Value.S_I_OK);
 				cOut.flush();
 			} else {
 				Settings.printDebug("Non INIT recieved, terminating connection");
 				// Send quit message to the client
-				cOut.write(Protocol.v.T_INIT + Protocol.v.S_I_FAILED);
+				cOut.write(Protocol.Value.T_INIT + Protocol.Value.S_I_FAILED);
 				cOut.flush();
 
 				// Close the connection to the client
@@ -113,39 +113,39 @@ public class DroneServer {
 					Settings.printDebug("Recieved packet from client, header: "+ (int)p[0] +" Size: "+p.length);
 
 					byte[] h = Protocol.extractHeader(p[0]);
-					switch(h[Protocol.i.H_TYPE]){
+					switch(h[Protocol.Index.H_TYPE]){
 					// Connect drone Packet.
-					case(Protocol.v.T_CONNECT):		// Connect type of packet.
-						int id = p[Protocol.i.DATA_OFFSET];
+					case(Protocol.Value.T_CONNECT):		// Connect type of packet.
+						int id = p[Protocol.Index.DATA_OFFSET];
 						Settings.printDebug("Connect Drone: "+ id);
 						drones.add(new ARDroneController(id));
 						break;
-					case(Protocol.v.T_CONTROL): // Protocol.v.C_SINGLE + Protocol.v.TESTFLIGHT)):
-						switch(h[Protocol.i.H_COMMAND]){
-						case(Protocol.v.C_MOVE):
+					case(Protocol.Value.T_CONTROL): // Protocol.v.C_SINGLE + Protocol.v.TESTFLIGHT)):
+						switch(h[Protocol.Index.H_COMMAND]){
+						case(Protocol.Value.C_MOVE):
 							Settings.printInfo("Move: Not implemented yet..");
 							break;
-						case(Protocol.v.C_TAKEOFF):
+						case(Protocol.Value.C_TAKEOFF):
 							Settings.printInfo("TakeOff!");
-							drones.get(p[Protocol.i.DATA_OFFSET]-1).takeOff();
+							drones.get(p[Protocol.Index.DATA_OFFSET]-1).takeOff();
 							break;
-						case(Protocol.v.C_LAND):
+						case(Protocol.Value.C_LAND):
 							Settings.printInfo("Land!");
-							drones.get(p[Protocol.i.DATA_OFFSET]-1).land();
+							drones.get(p[Protocol.Index.DATA_OFFSET]-1).land();
 							break;
-						case(Protocol.v.C_EMERGENCY):
+						case(Protocol.Value.C_EMERGENCY):
 							Settings.printInfo("Sending emergency signal to drone!");
-							drones.get(p[Protocol.i.DATA_OFFSET]).sendEmergency();
+							drones.get(p[Protocol.Index.DATA_OFFSET]).sendEmergency();
 							break;
-						case(Protocol.v.C_TESTFLIGHT):
+						case(Protocol.Value.C_TESTFLIGHT):
 							Settings.printDebug("Sending drone on test flight");
-							Settings.printDebug("p[DATA_OFFSET]:"+ p[Protocol.i.DATA_OFFSET]);
+							Settings.printDebug("p[DATA_OFFSET]:"+ p[Protocol.Index.DATA_OFFSET]);
 							//drones.get(p[Protocol.i.DATA_OFFSET]-1).testFlight();
-							drones.get(p[Protocol.i.DATA_OFFSET]-1).testFlight();
+							drones.get(p[Protocol.Index.DATA_OFFSET]-1).testFlight();
 							break;						
 						}
 					break;
-					case((byte)(Protocol.v.T_QUIT)):
+					case((byte)(Protocol.Value.T_QUIT)):
 						Settings.printDebug("Client sent Quit");
 					running = false;
 					break;

@@ -52,7 +52,7 @@ public class Protocol {
 	 * Stores all mask values relevant to the protocol
 	 * @author Rodoo
 	 */
-	public static class m {
+	public static class Mask {
 		public static final byte TYPE 	= 	(byte)0xE0; // 0xE0, 1110 0000
 		public static final byte SELECT	=	(byte)0x18; // 0x18, 0001 1000
 		public static final byte COMMAND= 	(byte)0x07; // 0x07, 0000 0111
@@ -62,7 +62,7 @@ public class Protocol {
 	 * Stores the sizes of the different packets from the client
 	 * @author Rodoo
 	 */
-	public static class s {
+	public static class Size {
 		public static final byte INIT		=	1;
 		public static final byte CONNECT	=	2;
 		public static final byte ID			=	2;
@@ -78,7 +78,7 @@ public class Protocol {
 	 * Stores the indexes of different values.
 	 * @author Rodoo
 	 */
-	public static class i {
+	public static class Index {
 		public static final byte H_TYPE		=	0;
 		public static final byte H_SELECT	=	1;
 		public static final byte H_COMMAND	=	2;
@@ -94,7 +94,7 @@ public class Protocol {
 	 * C_: Command
 	 * @author Rodoo
 	 */
-	public static class v {
+	public static class Value {
 		// Main types:
 		//public static final byte M_TYPE 	= 	(byte)0xE0; // 0xE0, 1110 0000
 		public static final byte T_INIT	 	= 	(byte)0x20; // 0x20, 0010 0000
@@ -132,9 +132,9 @@ public class Protocol {
 	public static byte[] extractHeader(byte h){
 		return ByteBuffer
 				.allocate(3)
-				.put(0, (byte)(h & m.TYPE))
-				.put(1, (byte)(h & m.SELECT))
-				.put(2, (byte)(h & m.COMMAND))
+				.put(0, (byte)(h & Mask.TYPE))
+				.put(1, (byte)(h & Mask.SELECT))
+				.put(2, (byte)(h & Mask.COMMAND))
 				.array();
 	}
 	
@@ -149,50 +149,50 @@ public class Protocol {
 		
 		int size = 0;
 		// Get the default size for our different headers
-		switch(b[i.H_TYPE]){	// Switch packet type
-		case v.T_INIT:			// INIT
-			size =  s.INIT;		// Return INIT packet size
+		switch(b[Index.H_TYPE]){	// Switch packet type
+		case Value.T_INIT:			// INIT
+			size =  Size.INIT;		// Return INIT packet size
 			break;
-		case v.T_CONNECT:		// Connect drone!
-			size = s.CONNECT;	
+		case Value.T_CONNECT:		// Connect drone!
+			size = Size.CONNECT;	
 			break;
-		case v.T_CONTROL:		// Control drone(s)!
-			switch(b[i.H_COMMAND]){
-			case(v.C_TESTFLIGHT):	
-				size = s.C_TESTFLIGHT; 
+		case Value.T_CONTROL:		// Control drone(s)!
+			switch(b[Index.H_COMMAND]){
+			case(Value.C_TESTFLIGHT):	
+				size = Size.C_TESTFLIGHT; 
 				break;
-			case(v.C_MOVE):		
-				size = s.C_MOVE;		
+			case(Value.C_MOVE):		
+				size = Size.C_MOVE;		
 				break;
-			case(v.C_LAND):		
-				size = s.C_LAND;		// All drones
+			case(Value.C_LAND):		
+				size = Size.C_LAND;		// All drones
 				break;
-			case(v.C_TAKEOFF):	
-				size = s.C_TAKEOFF;		// All drones
+			case(Value.C_TAKEOFF):	
+				size = Size.C_TAKEOFF;		// All drones
 				break;
-			case(v.C_EMERGENCY):
-				size = s.C_EMERGENCY;			// All drones
+			case(Value.C_EMERGENCY):
+				size = Size.C_EMERGENCY;			// All drones
 				break;
 			default:
 				Settings.printDebug("Unknown Control command: "+b[2]);
 				return -1;
 			}	
 			break;
-		case v.T_QUIT:				// Quit
-			return s.QUIT;
+		case Value.T_QUIT:				// Quit
+			return Size.QUIT;
 		default:
 			Settings.printDebug("Unknown header received");
 			return -1;
 		}
 		// If it's not for all, the data field starts with id (one byte) 
-		if(b[i.H_COMMAND] == v.S_D_ALL) size--;
+		if(b[Index.H_COMMAND] == Value.S_D_ALL) size--;
 		return size;
 	}
 	
 	public static byte[] sendTestFlightDrone(int id) {
 		return ByteBuffer
 				.allocate(2)
-				.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_TESTFLIGHT))
+				.put(0, (byte)(Value.T_CONTROL + Value.S_D_SINGLE + Value.C_TESTFLIGHT))
 				.put(1, (byte)id)
 				.array();
 	}
@@ -204,14 +204,14 @@ public class Protocol {
 	public static byte[] sendInitRequest(){
 		return ByteBuffer
 				.allocate(1)
-				.put(0, (byte)(v.T_INIT + v.S_I_REQUEST))
+				.put(0, (byte)(Value.T_INIT + Value.S_I_REQUEST))
 				.array();
 	}
 	
 	public static byte[] sendConnectDrone(int id) {
 		return ByteBuffer
 				.allocate(2)
-				.put(0, (byte)(v.T_CONNECT + v.S_D_SINGLE))
+				.put(0, (byte)(Value.T_CONNECT + Value.S_D_SINGLE))
 				.put(1, (byte)id)
 				.array();
 	}
@@ -219,7 +219,7 @@ public class Protocol {
 	public static byte[] sendTakeOff(int id) {
 		return ByteBuffer
 					.allocate(2)
-					.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_TAKEOFF))
+					.put(0, (byte)(Value.T_CONTROL + Value.S_D_SINGLE + Value.C_TAKEOFF))
 					.put(1, (byte)id)
 					.array();
 	}
@@ -227,7 +227,7 @@ public class Protocol {
 	public static byte[] sendLand(int id) {
 		return ByteBuffer
 					.allocate(2)
-					.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_LAND))
+					.put(0, (byte)(Value.T_CONTROL + Value.S_D_SINGLE + Value.C_LAND))
 					.put(1, (byte)id)
 					.array();
 	}
@@ -235,7 +235,7 @@ public class Protocol {
 	public static byte[] sendEmergency(int id){
 		return ByteBuffer
 					.allocate(2)
-					.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_EMERGENCY))
+					.put(0, (byte)(Value.T_CONTROL + Value.S_D_SINGLE + Value.C_EMERGENCY))
 					.put(1, (byte)id)
 					.array();
 	}
@@ -244,7 +244,7 @@ public class Protocol {
 		//	ByteBuffer.allocate(x).put(a).put(b).array() = byte[];
 		return ByteBuffer
 					.allocate(18)		// Allocate the array
-					.put(0, (byte)(v.T_CONTROL + v.S_D_SINGLE + v.C_MOVE))	// Header
+					.put(0, (byte)(Value.T_CONTROL + Value.S_D_SINGLE + Value.C_MOVE))	// Header
 					.put(1, (byte)id)	// Drone ID
 					.putFloat(3, lr)	// Data
 					.putFloat(7, fb)	// Data
@@ -263,19 +263,19 @@ public class Protocol {
 		if(r)
 			return ByteBuffer
 					.allocate(1)
-					.put((byte)(v.T_INIT + v.S_I_OK))
+					.put((byte)(Value.T_INIT + Value.S_I_OK))
 					.array();
 		else
 			return ByteBuffer
 					.allocate(1)
-					.put((byte)(v.T_INIT + v.S_I_FAILED))
+					.put((byte)(Value.T_INIT + Value.S_I_FAILED))
 					.array();	
 	}
 	
 	public static byte[] sendQuit(){
 		return ByteBuffer
 					.allocate(1)
-					.put((byte)v.T_QUIT)
+					.put((byte)Value.T_QUIT)
 					.array();
 	}
 	

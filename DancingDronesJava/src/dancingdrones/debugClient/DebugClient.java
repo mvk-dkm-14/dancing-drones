@@ -71,11 +71,11 @@ public class DebugClient {
 		System.out.println("[DEBUG] Packet recieved. Size: " + bytesRead + " Header: "+ recieved[0]);
 		boolean success = false;
 		switch(recieved[0]){
-			case Protocol.v.T_INIT + Protocol.v.S_I_OK:
+			case Protocol.Value.T_INIT + Protocol.Value.S_I_OK:
 				System.out.println("[INFO] INIT OK");
 				success = true;
 				break;
-			case Protocol.v.T_INIT + Protocol.v.S_I_FAILED:
+			case Protocol.Value.T_INIT + Protocol.Value.S_I_FAILED:
 				System.out.println("[INFO] INIT Failed");
 				break;
 			default:
