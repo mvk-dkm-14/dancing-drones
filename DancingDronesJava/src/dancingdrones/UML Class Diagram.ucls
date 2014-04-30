@@ -3,7 +3,7 @@
   realizations="true" associations="true" dependencies="true" nesting-relationships="true">  
   <class id="1" language="java" name="dancingdrones.common.Protocol.Index" project="DancingDronesJava" 
     file="/DancingDronesJava/src/dancingdrones/common/Protocol.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="655" y="-91"/>    
+    <position height="-1" width="-1" x="420" y="549"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -12,7 +12,7 @@
   </class>  
   <class id="2" language="java" name="dancingdrones.common.Protocol.Value" project="DancingDronesJava" 
     file="/DancingDronesJava/src/dancingdrones/common/Protocol.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="32" y="533"/>    
+    <position height="-1" width="-1" x="85" y="609"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -21,7 +21,7 @@
   </class>  
   <class id="3" language="java" name="dancingdrones.common.Protocol.Size" project="DancingDronesJava" 
     file="/DancingDronesJava/src/dancingdrones/common/Protocol.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="286" y="631"/>    
+    <position height="-1" width="-1" x="256" y="673"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -30,7 +30,7 @@
   </class>  
   <class id="4" language="java" name="dancingdrones.common.Protocol.Mask" project="DancingDronesJava" 
     file="/DancingDronesJava/src/dancingdrones/common/Protocol.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="472" y="580"/>    
+    <position height="-1" width="-1" x="417" y="726"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -48,100 +48,156 @@
   </class>  
   <class id="6" language="java" name="dancingdrones.common.Settings" project="DancingDronesJava" 
     file="/DancingDronesJava/src/dancingdrones/common/Settings.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="662" y="593"/>    
+    <position height="-1" width="-1" x="633" y="596"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="dancingdrones.server.ARDroneController" project="DancingDronesJava" 
+  <class id="7" language="java" name="dancingdrones.webClient.WebClient" project="DancingDronesJava" 
+    file="/DancingDronesJava/src/dancingdrones/webClient/WebClient.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1213" y="176"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="dancingdrones.webClient.State" project="DancingDronesJava" 
+    file="/DancingDronesJava/src/dancingdrones/webClient/State.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1231" y="721"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="9" language="java" name="dancingdrones.webClient.InstructionSet" project="DancingDronesJava" 
+    file="/DancingDronesJava/src/dancingdrones/webClient/InstructionSet.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1233" y="445"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="10" language="java" name="dancingdrones.server.ARDroneController" project="DancingDronesJava" 
     file="/DancingDronesJava/src/dancingdrones/server/ARDroneController.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="917" y="642"/>    
+    <position height="-1" width="-1" x="948" y="597"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="8" language="java" name="dancingdrones.server.DroneServer.DroneServerListener" project="DancingDronesJava" 
+  <class id="11" language="java" name="dancingdrones.server.DroneServer.DroneServerListener" project="DancingDronesJava" 
     file="/DancingDronesJava/src/dancingdrones/server/DroneServer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="632" y="127"/>    
+    <position height="-1" width="-1" x="634" y="161"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="9" language="java" name="dancingdrones.server.DroneServer" project="DancingDronesJava" 
+  <class id="12" language="java" name="dancingdrones.server.DroneServer" project="DancingDronesJava" 
     file="/DancingDronesJava/src/dancingdrones/server/DroneServer.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="932" y="222"/>    
+    <position height="-1" width="-1" x="939" y="158"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
       visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <dependency id="10">    
+  <dependency id="13">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="14">    
+    <end type="SOURCE" refId="10"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="15">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="6"/>  
   </dependency>  
-  <nesting id="11">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="8"/>  
-  </nesting>  
-  <dependency id="12">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="6"/>  
-  </dependency>  
-  <association id="13">    
-    <end type="SOURCE" refId="9" navigable="false">      
-      <attribute id="14" name="drones"/>      
-      <multiplicity id="15" minimum="0" maximum="2147483647"/>    
-    </end>    
-    <end type="TARGET" refId="7" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
   <dependency id="16">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="6"/>  
+    <bendpoint x="689" y="398"/>    
+    <bendpoint x="534" y="397"/>    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="1"/>  
   </dependency>  
   <dependency id="17">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="2"/>  
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="5"/>  
   </dependency>  
   <dependency id="18">    
-    <end type="SOURCE" refId="8"/>    
-    <end type="TARGET" refId="6"/>  
+    <bendpoint x="785" y="258"/>    
+    <bendpoint x="498" y="265"/>    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="5"/>  
   </dependency>  
-  <nesting id="19">    
+  <association id="19">    
+    <bendpoint x="1370" y="658"/>    
+    <bendpoint x="1370" y="720"/>    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="20" name="states"/>      
+      <multiplicity id="21" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="8" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="22">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="3"/>  
   </nesting>  
-  <nesting id="20">    
+  <nesting id="23">    
+    <bendpoint x="334" y="500"/>    
+    <bendpoint x="337" y="644"/>    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="4"/>  
   </nesting>  
-  <nesting id="21">    
+  <nesting id="24">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="11"/>  
+  </nesting>  
+  <association id="25">    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="26" name="drones"/>      
+      <multiplicity id="27" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="28">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="1"/>  
   </nesting>  
-  <dependency id="22">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="5"/>  
+  <dependency id="29">    
+    <bendpoint x="696" y="424"/>    
+    <bendpoint x="192" y="424"/>    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="2"/>  
   </dependency>  
-  <nesting id="23">    
+  <dependency id="30">    
+    <end type="SOURCE" refId="11"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <association id="31">    
+    <bendpoint x="1314" y="177"/>    
+    <bendpoint x="1396" y="362"/>    
+    <bendpoint x="1396" y="444"/>    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="32" name="instructionSets"/>      
+      <multiplicity id="33" minimum="0" maximum="2147483647"/>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="34">    
     <end type="SOURCE" refId="5"/>    
     <end type="TARGET" refId="2"/>  
   </nesting>  
-  <dependency id="24">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="1"/>  
-  </dependency>  
-  <dependency id="25">    
-    <end type="SOURCE" refId="8"/>    
-    <end type="TARGET" refId="5"/>  
-  </dependency>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    
