@@ -34,7 +34,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	
 
 	
-	public ARDroneController(int id) throws IOException, InterruptedException{
+	public ARDroneController(int id) throws IOException, InterruptedException {
 		Settings.printDebug("[ARDroneController] Creating drone with ip ."+ id);
 		this.id = id;
 		drone = new ARDrone(InetAddress.getByName(Settings.IP_NET + id));
@@ -44,7 +44,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		drone.addStatusChangeListener(this);
 		drone.addNavDataListener(this);
 //		startUpdateLoop();
-//		initDrone();
+		initDrone();
 	}
 	
     private void startUpdateLoop() {
@@ -104,11 +104,11 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		// connect to drone and initialize it.
 		drone.connect();
 		Thread.sleep(1000);
-		drone.clearEmergencySignal();
+//		drone.clearEmergencySignal();
 		
 		// Tell the drone we want navigation data from it.
 		Thread.sleep(100);
-		drone.sendDemoNavigationData();
+//		drone.sendAllNavigationData();
 		
 		// Wait until drone is ready
 		//drone.waitForReady(CONNECT_TIMEOUT);
@@ -174,7 +174,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		// Create ARDrone object,
 		// connect to drone and initialize it.
 		// drone = new ARDrone();
-		drone.connect();
+//		drone.connect();
 		drone.clearEmergencySignal();
 		Thread.sleep(1000);
 		

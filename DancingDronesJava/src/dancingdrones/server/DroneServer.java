@@ -152,7 +152,7 @@ public class DroneServer {
 					default:
 						Settings.printDebug("unknown header recieved, value: "+p[0]);
 					} // Switch
-				} // Else
+				} 
 				for(ARDroneController drone : drones) {
 					drone.toString();
 					
