@@ -25,7 +25,7 @@ public class DroneServer {
 	//private PrintWriter cOut;
 	private InputStream cIn;
 	private OutputStream cOut;
-	private LinkedList<byte[]> unread;
+	private volatile LinkedList<byte[]> unread;
 	//private List<byte[]> unread;
 	private ArrayList<ARDroneController> drones;
 	private static Logger logger = Logger.getLogger(DroneServer.class.getName());
@@ -40,6 +40,10 @@ public class DroneServer {
 		Settings.printDebug("Creating server object");
 		DroneServer s = new DroneServer();
 		s.start();
+	}
+	
+	protected void addPacket(byte[] packet) {
+		unread.add(packet);
 	}
 
 	public void start() {
@@ -95,7 +99,8 @@ public class DroneServer {
 			}
 
 			Settings.printDebug("Creating a listening thread and starts it.");
-			Thread listenThread = new Thread(new DroneServerListener(cIn, unread));
+//			Thread listenThread = new Thread(new DroneServerListener(cIn, unread));
+			Thread listenThread = new Thread(new DroneServerListener(cIn, this));
 			listenThread.start();		// .start() creates a new thread, .run just runs the method
 
 			//Main client loop
@@ -189,11 +194,15 @@ public class DroneServer {
 	public class DroneServerListener implements Runnable {
 		private static final int BUFFER_SIZE = 20;
 		private final InputStream in;
-		private final LinkedList<byte[]> unread;
+		private DroneServer server;
+		//		private final LinkedList<byte[]> unread;
+		
 
-		public DroneServerListener(InputStream in, LinkedList<byte[]> unread) {
+//		public DroneServerListener(InputStream in, LinkedList<byte[]> unread) {
+		public DroneServerListener(InputStream in, DroneServer server) {
 			this.in = in;
-			this.unread = unread;
+			this.server = server;
+//			this.unread = unread;
 		}
 
 		/**
@@ -229,7 +238,8 @@ public class DroneServer {
 								// Copy to new array to store in unread
 								for(int i=0; i<pSize; i++)
 									p[i] = b[i];
-								unread.add(p);
+//								unread.add(p);
+								server.addPacket(p);
 								Settings.printDebug("Added packet with header: "+ p[0]);
 							} else
 								Settings.printDebug("Error reading data, wrong number bytes read.");
