@@ -107,7 +107,7 @@ public class DroneServer {
 			Settings.printDebug("Main loop reached");
 			boolean running = true;
 			while(running){
-				// Do we have any incomming packets from the client?
+				// Do we have any incoming packets from the client?
 //				if(unread.size() < 1) {
 //					//Settings.printDebug("Nothing to do, sleeping for 500ms");
 //					Thread.sleep(33);
