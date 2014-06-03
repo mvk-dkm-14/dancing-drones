@@ -216,7 +216,6 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 			Settings.printDebug("Battery level: "+nd.getBattery()+"%");
 			nextOut = System.currentTimeMillis()+1000;
 		}
-		Settings.printDebug("Navdata!");
 		
 		lastSequence = nd.getSequence();
 
