@@ -156,8 +156,9 @@ public class NavData
         int offset = 0;
 
         int header = byteArrayToInt(buf, offset);
-        if(header != 0x55667788 || header != 0x55667789 )
+        if(!(header == 0x55667788 || header == 0x55667789)){
             throw new NavDataFormatException("Error parsing NavData");
+        }
         offset += 4;
 
         int state = byteArrayToInt(buf, offset);
