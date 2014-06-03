@@ -55,7 +55,7 @@ public class Protocol {
 	public static class Mask {
 		public static final byte TYPE 	= 	(byte)0xE0; // 0xE0, 1110 0000
 		public static final byte SELECT	=	(byte)0x18; // 0x18, 0001 1000
-		public static final byte COMMAND= 	(byte)0x07; // 0x07, 0000 0111
+		public static final byte COMMAND = 	(byte)0x07; // 0x07, 0000 0111
 	}
 	
 	/**
@@ -102,13 +102,13 @@ public class Protocol {
 		public static final byte T_CONNECT	=	(byte)0x40; // 0x40, 0100 0000
 		public static final byte T_CONTROL 	=	(byte)0x60; // 0x60, 0110 0000
 		public static final byte T_REQUEST 	=	(byte)0x80; // 0x80, 1000 0000
-		public static final byte T_QUIT 	=	(byte)0xA0; // 0xA0, 1010 0000
+		public static final byte T_QUIT 		=	(byte)0xA0; // 0xA0, 1010 0000
 		
 		// Init selection:	
 		//public static final byte M_SELECT		=	0x18; // 0x18, 0001 1000
 		
-		public static final byte S_I_FAILED		=	0x00; // 0x00, 0000 0000
-		public static final byte S_I_OK			=	0x08; // 0x08, 0000 1000
+		public static final byte S_I_FAILED	=	0x00; // 0x00, 0000 0000
+		public static final byte S_I_OK		=	0x08; // 0x08, 0000 1000
 		public static final byte S_I_REQUEST 	=	0x10; // 0x10, 0001 0000	
 		// Drone selection:							  // 0x18, 0001 1000
 		public static final byte S_D_SINGLE 	=	0x08; // 0x08, 0000 1000
@@ -117,9 +117,9 @@ public class Protocol {
 		
 		// Drone commands:							  
 		//public static final byte M_COMMAND	= 	0x07; // 0x07, 0000 0111
-		public static final byte C_TAKEOFF 		=	0x01; // 0x01, 0000 0001
+		public static final byte C_TAKEOFF 	=	0x01; // 0x01, 0000 0001
 		public static final byte C_LAND 		=	0x02; // 0x02, 0000 0010
-		public static final byte C_MOVE			=	0x03; // 0x03, 0000 0101
+		public static final byte C_MOVE		=	0x03; // 0x03, 0000 0101
 		public static final byte C_EMERGENCY	=	0x04; // 0x04, 0000 0100
 		public static final byte C_TESTFLIGHT	=	0x05; // 0x05, 0000 0101 
 	}

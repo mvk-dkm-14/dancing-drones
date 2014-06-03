@@ -16,10 +16,11 @@ import dancingdrones.common.Settings;
 public class ARDroneController implements NavDataListener, DroneStatusChangeListener {
 	private long nextOut = 0;
 	
-	private AtomicBoolean ready = new AtomicBoolean(false);
-	private AtomicBoolean flying = new AtomicBoolean(false);
-	private AtomicInteger battery = new AtomicInteger(0);
-	private AtomicBoolean running = new AtomicBoolean(false);
+	private boolean ready = false;
+	private boolean flying = false;
+	private int battery = 0;
+	private boolean running = false;
+	private long lastCommandSentAt = 0;
 	
 	private LinkedList<float[]> moveQueue = new LinkedList<float[]>();
 	
@@ -38,7 +39,6 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		Settings.printDebug("[ARDroneController] Creating drone with ip ."+ id);
 		this.id = id;
 		drone = new ARDrone(InetAddress.getByName(Settings.IP_NET + id));
-//		drone = new AtomicReference<ARDrone>(new ARDrone(InetAddress.getByName(Settings.IP_NET + id)));
 		
 		// Tell the drone to send updates to this instance (object)
 		drone.addStatusChangeListener(this);
@@ -47,60 +47,15 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		initDrone();
 	}
 	
-    private void startUpdateLoop() {
-        Thread thread = new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                updateLoop();
-            }
-        });
-        thread.setName("ARDrone Control Loop");
-        thread.start();
-    }
-	
-	private void updateLoop(){
-		if(running.get())
-			return;
-		running.set(true);
-		try {
-			System.err.println("[ARDroneController] Connecting to the drone");
-			drone.connect();
-			drone.waitForReady(Settings.CONNECT_TIMEOUT);
-			drone.clearEmergencySignal();
-			System.err.println("[ARDroneController] Connected to the drone");
-			try {
-				while(running.get()){
-					if(flying.get()) {
-						if(moveQueue.size() > 0) {
-							float[] m = moveQueue.getFirst();
-				            if(m[0] != 0 || m[1] != 0 || m[2] != 0 || m[3] != 0)
-				            	drone.move(m[0], m[1], m[2], m[3]);
-						}
-			            else {
-			                drone.hover();
-			            }
-			        } else {
-			        	// Not flying
-			        }
-			        try {
-			            Thread.sleep(Settings.READ_UPDATE_DELAY_MS);
-			        } catch(InterruptedException e) {
-			            // Ignore
-			        }
-			    }
-			}
-			finally {
-			    drone.disconnect();
-			}
-		} catch (IOException e) {
-			
-		}
-	}
-	
 	public void initDrone() throws IOException, InterruptedException{
+		System.err.println("[ARDroneController][ID"+id+"] Connecting to the drone");
 		drone.connect();
+		drone.waitForReady(Settings.CONNECT_TIMEOUT);
+		drone.clearEmergencySignal();
+		System.err.println("[ARDroneController][ID"+id+"] Connected to the drone");
+		drone.setConfigOption("CONTROL:altitude_max", "3000");
+		drone.setConfigOption("CONTROL:altitude_min", "1500");
+		lastCommandSentAt = System.currentTimeMillis();
 	}
 	
 	/**
@@ -197,7 +152,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
      */
 	@Override
 	public void ready() {
-		this.ready.set(true);
+		this.ready = true;
 	}
 
 	@Override
@@ -209,7 +164,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		}
 		this.nd = nd;
 		// Fresh data received
-		this.flying.set(nd.isFlying());
+		this.flying = nd.isFlying();
 		
 		if(System.currentTimeMillis()>nextOut) {
 			Settings.printDebug("Altitude: "+nd.getAltitude()+"m");
@@ -218,6 +173,16 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		}
 		
 		lastSequence = nd.getSequence();
+		
+		// "Keepalive" to the drone
+		if(lastCommandSentAt+1000 >= System.currentTimeMillis()) {
+			try {
+				drone.move(0, 0, 1, 0);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 	}
 

@@ -158,10 +158,6 @@ public class DroneServer {
 						Settings.printDebug("unknown header recieved, value: "+p[0]);
 					} // Switch
 				} 
-				for(ARDroneController drone : drones) {
-					drone.toString();
-					
-				}
 			}			
 			Settings.printDebug("End of program reached, terminating");
 			clientSocket.close();
