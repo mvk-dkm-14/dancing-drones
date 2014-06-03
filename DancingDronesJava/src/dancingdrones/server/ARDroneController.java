@@ -100,23 +100,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	}
 	
 	public void initDrone() throws IOException, InterruptedException{
-		// Create ARDrone object,
-		// connect to drone and initialize it.
 		drone.connect();
-		Thread.sleep(1000);
-//		drone.clearEmergencySignal();
-		
-		// Tell the drone we want navigation data from it.
-		Thread.sleep(100);
-//		drone.sendAllNavigationData();
-		
-		// Wait until drone is ready
-		//drone.waitForReady(CONNECT_TIMEOUT);
-		Settings.printDebug("[ARDroneController] Waiting for drone to be ready..");
-		while(!ready.get())
-				Thread.sleep(100);
-		Settings.printDebug("[ARDroneController] Drone is now Ready!");
-				
 	}
 	
 	/**
