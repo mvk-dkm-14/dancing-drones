@@ -6,6 +6,7 @@ Execute on start
 
 // this is the instance of the main model
 var model = new Model();
+var mysocket = new WebSocket("ws://localhost:1337");
 var stateids = 0;
 var instructionids = 0;
 
@@ -114,9 +115,9 @@ function Model() {
 	/* SEND INSTRUCTION SET TO SERVER */
 
 	this.sendInstructionSet = function (id) {
-		var mysocket = new WebSocket("ws://localhost:1337");
 
-		var firstbyte = parseInt("01111001", 2);
+		//var firstbyte = parseInt("01111001", 2);
+		var firstbyte = "y";
 
 		
 		var str = "[";
