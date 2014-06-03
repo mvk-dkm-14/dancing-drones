@@ -21,8 +21,17 @@ h1 {
 	right: 0;
 }
 
+select {
+	position: relative;
+	margin-top: 10px;
+	z-index: 2;
+}
+
 form {
 	height: 100%;
+	width: 100%;
+	overflow-x: scroll;
+
 	box-sizing: border-box;
 	padding: 3%;
 
@@ -43,4 +52,21 @@ input[type=range] {
 	height: 80%;
 
 	-webkit-appearance: slider-vertical;
+}
+
+input[type=button] {
+	background: #555;
+	color: #EEE;
+
+	border: 1px solid #333;
+	border-radius: 3px;
+	padding: 5px 10px;
+
+	font-weight: 300;
+
+	position: absolute;
+	bottom: 25px;
+}
+input[type=button]:first-of-type {
+	left: 45%;
 }

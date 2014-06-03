@@ -6,16 +6,30 @@
 	<link rel="stylesheet" type="text/css" href="normalize.css">
 	<link rel="stylesheet" type="text/css" href="style.css">
 
-	<script type="text/javascript" src="model.js"></script>
-	<script type="text/javascript" src="view.js"></script>
-	<script type="text/javascript" src="controller.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript" src="modernizr.js"></script>
 </head>
 <body>
 	<h1>Dancing Drones</h1>
-	<form>
+	<select>
+		<option>option1</option>
+		<option>option2</option>
+	</select>
+	<form id="selects">
+		<input type="range">
+		<input type="range">
+		<input type="range">
+		<input type="range">
+		<input type="range">
+		<input type="range">
 		<input type="range">
 		<input type="range">
 		<input type="range">
 	</form>
+	<input type="button" value="Spara"><input type="button" value="Skicka">
+
+	<script type="text/javascript" src="model.js"></script>
+	<script type="text/javascript" src="view.js"></script>
+	<script type="text/javascript" src="controller.js"></script>
 </body>
 </html>
