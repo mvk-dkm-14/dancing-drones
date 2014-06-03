@@ -126,9 +126,12 @@ public class DroneServer {
 						drones.add(new ARDroneController(id));
 						break;
 					case(Protocol.Value.T_CONTROL): // Protocol.v.C_SINGLE + Protocol.v.TESTFLIGHT)):
+						// CONTROL BITS
 						switch(h[Protocol.Index.H_COMMAND]){
 						case(Protocol.Value.C_MOVE):
-							Settings.printInfo("Move: Not implemented yet..");
+							// At the moment only receives a target height, in percentage of max height
+							// Second byte is ID and third is Data (height int 0-100)
+							drones.get(p[Protocol.Index.DATA_OFFSET]-1).setTargetHeight((int)p[2]);
 							break;
 						case(Protocol.Value.C_TAKEOFF):
 							Settings.printInfo("TakeOff!");

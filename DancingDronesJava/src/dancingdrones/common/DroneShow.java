@@ -10,11 +10,10 @@ public class DroneShow {
 	private int size;
 	
 	public DroneShow() {
-		super();
 		size = 0;
 	}
 	
-	public void add(Time time, Protocol.Value command){
+	public void add(int time, byte[] command){
 		root = new DroneCommand(time, command, top);
 		if( size == 0){
 			current = top;

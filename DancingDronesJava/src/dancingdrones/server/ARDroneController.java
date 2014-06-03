@@ -53,8 +53,9 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		drone.waitForReady(Settings.CONNECT_TIMEOUT);
 		drone.clearEmergencySignal();
 		System.err.println("[ARDroneController][ID"+id+"] Connected to the drone");
-		drone.setConfigOption("CONTROL:altitude_max", "3000");
-		drone.setConfigOption("CONTROL:altitude_min", "1500");
+		drone.setConfigOption("CONTROL:altitude_max", "2000");
+		drone.setConfigOption("CONTROL:altitude_min", "500");
+		System.err.println("[ARDroneController][ID"+id+"] Sent max/min altitude to Drone");
 		lastCommandSentAt = System.currentTimeMillis();
 	}
 	
@@ -160,22 +161,30 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		
 	}
 	
-	public void ascend() {
+	public void moveToTargetHeight() {
 		try {
-			drone.move(0, 0, 1, 0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			if(nd.getAltitude()*1000-targetHeight < 100)
+				hover();	
+			else if(nd.getAltitude()*1000 < targetHeight)
+				ascend();
+			else if(nd.getAltitude()*1000 > targetHeight)
+				descend();
+		} catch(IOException e) {
+			System.out.println("Something went wrong when sending commands to drone!");
 			e.printStackTrace();
 		}
 	}
 	
-	public void descend() {
-		try {
-			drone.move(0, 0, -1, 0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void ascend() throws IOException{
+		drone.move(0, 0, 1, 0);
+	}
+	
+	public void hover() throws IOException {
+		drone.hover();
+	}
+	
+	public void descend() throws IOException {
+		drone.move(0, 0, -1, 0);
 	}
 
 	@Override
