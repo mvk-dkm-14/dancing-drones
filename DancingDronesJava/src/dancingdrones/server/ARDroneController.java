@@ -154,6 +154,29 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	public void ready() {
 		this.ready = true;
 	}
+	
+	public void setTargetHeight(int targetHeight) {
+		this.targetHeight = targetHeight;
+		
+	}
+	
+	public void ascend() {
+		try {
+			drone.move(0, 0, 1, 0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void descend() {
+		try {
+			drone.move(0, 0, -1, 0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void navDataReceived(NavData nd) {
@@ -178,6 +201,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		if(lastCommandSentAt+1000 >= System.currentTimeMillis()) {
 			try {
 				drone.move(0, 0, 1, 0);
+				lastCommandSentAt = System.currentTimeMillis();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
