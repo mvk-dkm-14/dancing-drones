@@ -114,7 +114,23 @@ function Model() {
 	/* SEND INSTRUCTION SET TO SERVER */
 
 	this.sendInstructionSet = function (id) {
-		//TODO
+		var mysocket = new WebSocket("ws://localhost:1337");
+
+		var firstbyte = parseInt("01111001", 2);
+
+		
+		var str = "[";
+		var first = true;
+		for(var i = 0; i < this.instructionsets[0].getLength(); i++) {
+			if(first)
+				first = false;
+			else
+				str += ",";
+			str += this.instructionsets[0].states[i].getHeight();
+		}
+		str += "]";
+
+		//mysocket.send(str);
 	};
 
 	/* CLEARING MODEL */
@@ -133,7 +149,6 @@ function Model() {
 		for (var i = 0; i < listeners.length; i++) {
 			listeners[i].update(args);
 		}
-		this.saveToStorage();
 	};
 
 	this.saveToStorage = function () {
@@ -159,6 +174,7 @@ function Model() {
 			var arr = JSON.parse(str);
 			this.instructionsets[0].setLength(arr.length);
 			for(var i = 0; i < arr.length; i++) {
+				this.instructionsets[0].states[i].setHeight(arr[i]);
 				$('#select'+i).val(arr[i]);
 			}
 		}
