@@ -208,13 +208,8 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		
 		// "Keepalive" to the drone
 		if(lastCommandSentAt+1000 >= System.currentTimeMillis()) {
-			try {
-				drone.move(0, 0, 1, 0);
-				lastCommandSentAt = System.currentTimeMillis();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			moveToTargetHeight();
+			lastCommandSentAt = System.currentTimeMillis();
 		}
 
 	}
