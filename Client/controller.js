@@ -3,8 +3,16 @@ function Controller() {
 		model.saveToStorage();
 	});
 	$('#send').click(function () {
-		console.log("sending");
 		model.sendInstructionSet();
+	});
+	$('#connect').click(function () {
+		model.connectToDrone();
+	});
+	$('#takeoff').click(function () {
+		model.droneTakeOff();
+	});
+	$('#land').click(function () {
+		model.droneLand();
 	});
 
 	this.update = function () {

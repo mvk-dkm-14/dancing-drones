@@ -6,11 +6,14 @@ Execute on start
 
 // this is the instance of the main model
 
-//var ip = "130.229.143.104";
-var ip = "localhost";
 
 var model = new Model();
+
+//var ip = "130.229.143.104";
+var ip = "localhost";
 var mysocket = new WebSocket("ws://"+ip+":1337", "binary");
+mysocket.onopen = function (evt) { var init = translate("00110000"); mysocket.send(init); };
+
 var stateids = 0;
 var instructionids = 0;
 
@@ -77,6 +80,7 @@ function InstructionSet(title, drones) {
 
 	/* SET THE NUMBER OF STATES OF THE SHOW, WHICH IS THE LENGTH IN SECONDS * 2 + 1 */
 	this.setLength = function(seconds) {
+		this.states = [];
 		for(i = 0; i < seconds; i++) {
 			this.states.push(new State(50, ""));
 		}
@@ -118,27 +122,35 @@ function Model() {
 
 	/* SEND INSTRUCTION SET TO SERVER */
 
+	this.connectToDrone = function () {
+		var connect = translate("01001000");
+		var unit = translate("1");
+		mysocket.send(connect+unit);
+	};
+
+	this.droneTakeOff = function () {
+		var takeoff = translate("01101001");
+		var unit = translate("1");
+		mysocket.send(takeoff+unit);
+	};
+
+	this.droneLand = function () {
+		var land = translate("01101010");
+		var unit = translate("1");
+		mysocket.send(land+unit);
+	};
+
 	this.sendInstructionSet = function (id) {
+		var unit = translate("1");
+		var gotoheight = translate("01101110");
 
-		var init = "00110000";
-		var takeoff = "01100001";
-
-		mysocket.send(translate(init));
-
-		mysocket.send(translate(takeoff));
-		
-		var str = "[";
-		var first = true;
 		for(var i = 0; i < this.instructionsets[0].getLength(); i++) {
-			if(first)
-				first = false;
-			else
-				str += ",";
-			str += this.instructionsets[0].states[i].getHeight();
+			var height = translate(this.instructionsets[0].states[i].getHeight());
+			//mysocket.send(gotoheight+unit+height);
+			setTimeout(function () { mysocket.send(gotoheight+unit+height);  }, 1000 * i);
+			setTimeout(function () { console.log(gotoheight+unit+height);  }, 1000 * i);
 		}
-		str += "]";
 
-		//mysocket.send(str);
 	};
 
 	/* CLEARING MODEL */
@@ -201,6 +213,5 @@ function Model() {
 function translate (num){
 	var bucket = parseInt(num, 2);
 	bucket = String.fromCharCode(bucket);
-	console.log(bucket);
 	return bucket;
 }
