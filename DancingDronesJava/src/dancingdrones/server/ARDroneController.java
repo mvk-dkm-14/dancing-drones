@@ -48,13 +48,15 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	}
 	
 	public void initDrone() throws IOException, InterruptedException{
+		targetHeight = 1500;
 		System.err.println("[ARDroneController][ID"+id+"] Connecting to the drone");
 		drone.connect();
 		drone.waitForReady(Settings.CONNECT_TIMEOUT);
 		drone.clearEmergencySignal();
+		drone.trim();
 		System.err.println("[ARDroneController][ID"+id+"] Connected to the drone");
 		drone.setConfigOption("CONTROL:altitude_max", "2000");
-		drone.setConfigOption("CONTROL:altitude_min", "500");
+		drone.setConfigOption("CONTROL:altitude_min", "1000");
 		System.err.println("[ARDroneController][ID"+id+"] Sent max/min altitude to Drone");
 		lastCommandSentAt = System.currentTimeMillis();
 	}
@@ -163,7 +165,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	
 	public void moveToTargetHeight() {
 		try {
-			if(nd.getAltitude()*1000-targetHeight < 200)
+			if(Math.abs(nd.getAltitude()*1000-targetHeight) < 200)
 				hover();	
 			else if(nd.getAltitude()*1000 < targetHeight)
 				ascend();
