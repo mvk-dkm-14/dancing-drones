@@ -1,6 +1,6 @@
 function View() {
 	curset = model.addInstructionSet("New", 3);
-	curset.setLength(30);
+	curset.setLength(60);
 	curset.setDrones("A");
 
 	this.update = function() {

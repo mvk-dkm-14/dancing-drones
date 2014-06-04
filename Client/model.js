@@ -149,8 +149,8 @@ function Model() {
 			doSendDelayed(i, translate(this.instructionsets[0].states[i].getHeight().toString(2)));
 
 		function doSendDelayed(i, myheight) {
-			setTimeout(function () { mysocket.send(gotoheight+unit+fillerbyte+fillerbyte+fillerbyte+myheight);  }, 1000 * i);
-			setTimeout(function () { console.log(gotoheight+unit+fillerbyte+fillerbyte+fillerbyte+myheight);  }, 1000 * i);
+			setTimeout(function () { mysocket.send(gotoheight+unit+fillerbyte+fillerbyte+fillerbyte+myheight);  }, 330 * i);
+			setTimeout(function () { console.log(gotoheight+unit+fillerbyte+fillerbyte+fillerbyte+myheight);  }, 330 * i);
 		}
 
 	};
