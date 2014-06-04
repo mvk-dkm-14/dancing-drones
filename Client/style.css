@@ -45,7 +45,7 @@ form {
 
 	white-space: nowrap;
 }
-input[type=range] {
+input[type=range], ::-moz-range-track {
 	margin-top: 7%;
 	margin-left: 3%;
 	margin-right: 3%;
@@ -53,7 +53,17 @@ input[type=range] {
 	width: 30px;
 	height: 70%;
 
+	background: #191919;
+	border: none;
+
 	-webkit-appearance: slider-vertical;
+}
+::-moz-range-track {
+	width: 5px;
+}
+::-moz-range-thumb {
+	width: 30px;
+	height: 10px;
 }
 
 input[type=button] {

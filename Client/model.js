@@ -142,13 +142,15 @@ function Model() {
 
 	this.sendInstructionSet = function (id) {
 		var unit = translate("1");
+		var fillerbyte = translate("0");
 		var gotoheight = translate("01101110");
 
-		for(var i = 0; i < this.instructionsets[0].getLength(); i++) {
-			var height = translate(this.instructionsets[0].states[i].getHeight());
-			//mysocket.send(gotoheight+unit+height);
-			setTimeout(function () { mysocket.send(gotoheight+unit+height);  }, 1000 * i);
-			setTimeout(function () { console.log(gotoheight+unit+height);  }, 1000 * i);
+		for(var i = 0; i < this.instructionsets[0].getLength(); i++)
+			doSendDelayed(i, translate(this.instructionsets[0].states[i].getHeight().toString(2)));
+
+		function doSendDelayed(i, myheight) {
+			setTimeout(function () { mysocket.send(gotoheight+unit+fillerbyte+fillerbyte+fillerbyte+myheight);  }, 1000 * i);
+			setTimeout(function () { console.log(gotoheight+unit+fillerbyte+fillerbyte+fillerbyte+myheight);  }, 1000 * i);
 		}
 
 	};
