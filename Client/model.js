@@ -5,8 +5,12 @@ Execute on start
 ***************************************/
 
 // this is the instance of the main model
+
+//var ip = "130.229.143.104";
+var ip = "localhost";
+
 var model = new Model();
-var mysocket = new WebSocket("ws://localhost:1337");
+var mysocket = new WebSocket("ws://"+ip+":1337", "binary");
 var stateids = 0;
 var instructionids = 0;
 
@@ -116,9 +120,12 @@ function Model() {
 
 	this.sendInstructionSet = function (id) {
 
-		//var firstbyte = parseInt("01111001", 2);
-		var firstbyte = "y";
+		var init = "00110000";
+		var takeoff = "01100001";
 
+		mysocket.send(translate(init));
+
+		mysocket.send(translate(takeoff));
 		
 		var str = "[";
 		var first = true;
@@ -181,8 +188,19 @@ function Model() {
 		}
 	}
 
+	this.getObservers = function () {
+		return listeners;
+	};
+
 	this.addObserver = function (listener) {
 		listeners.push(listener);
 	};
 	//*** END OBSERVABLE PATTERN ***
+}
+
+function translate (num){
+	var bucket = parseInt(num, 2);
+	bucket = String.fromCharCode(bucket);
+	console.log(bucket);
+	return bucket;
 }

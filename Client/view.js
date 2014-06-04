@@ -6,7 +6,7 @@ function View() {
 	this.update = function() {
 		$('#selects').html("");
 		for(var i=0; i<curset.getLength(); i++) {
-			$('#selects').append('<input type="range" id="select'+i+'" value="'+curset.states[i].getHeight()+'">');
+			$('#selects').append('<input type="range" orient="vertical" id="select'+i+'" value="'+curset.states[i].getHeight()+'">');
 		}
 	};
 }

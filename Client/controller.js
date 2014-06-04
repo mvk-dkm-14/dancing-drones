@@ -1,14 +1,16 @@
 function Controller() {
+	$('#save').click(function () {
+		model.saveToStorage();
+	});
+	$('#send').click(function () {
+		console.log("sending");
+		model.sendInstructionSet();
+	});
+
 	this.update = function () {
 		$('input[type=range]').change(function () {
 			curset.states[this.id.substring(6)].setHeight(this.value);
 			console.log(curset.states[this.id.substring(6)].getHeight());
-		});
-		$('#save').click(function () {
-			model.saveToStorage();
-		});
-		$('#send').click(function () {
-			model.sendInstructionSet();
 		});
 	};
 }
