@@ -93,6 +93,7 @@ public class DebugClient {
 			printMenu();
 			String o = s.nextLine();
 			byte[] c = o.getBytes("US-ASCII");
+			System.out.println("o: "+ o);
 			switch(c[0]){
 			case 'c':
 				sOut.write(Protocol.sendConnectDrone(1));
@@ -114,6 +115,12 @@ public class DebugClient {
 			case 'l':
 				sOut.write(Protocol.sendLand(1));
 				break;
+			case 'h':
+				System.out.println("Höjd? (mm): ");
+				int height = Integer.parseInt(s.nextLine());
+				System.out.println(height);
+				sOut.write(Protocol.sendTargetHeight(1, height));
+				break;
 			default:
 				break;
 			}
@@ -124,6 +131,6 @@ public class DebugClient {
 	}
 	
 	private void printMenu(){
-		System.out.println("[C]onnect Drone [T]ake Off [L]and Test[F]light");
+		System.out.println("[C]onnect Drone \t[T]ake Off \t[L]and \tTest[F]light \tSet [H]eight");
 	}
 }

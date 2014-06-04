@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -129,9 +130,12 @@ public class DroneServer {
 						// CONTROL BITS
 						switch(h[Protocol.Index.H_COMMAND]){
 						case(Protocol.Value.C_MOVE):
+							Settings.printDebug("MOVE NOT YET IMPLEMENTED!");
+							break;
+						case(Protocol.Value.C_HEIGHT):
 							// At the moment only receives a target height, in percentage of max height
 							// Second byte is ID and third is Data (height int 0-100)
-							drones.get(p[Protocol.Index.DATA_OFFSET]-1).setTargetHeight((int)p[2]);
+							drones.get(p[Protocol.Index.DATA_OFFSET]-1).setTargetHeight(ByteBuffer.allocate(4).getInt(2));
 							break;
 						case(Protocol.Value.C_TAKEOFF):
 							Settings.printInfo("TakeOff!");

@@ -163,7 +163,7 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	
 	public void moveToTargetHeight() {
 		try {
-			if(nd.getAltitude()*1000-targetHeight < 100)
+			if(nd.getAltitude()*1000-targetHeight < 200)
 				hover();	
 			else if(nd.getAltitude()*1000 < targetHeight)
 				ascend();
@@ -175,12 +175,12 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 		}
 	}
 	
-	public void ascend() throws IOException{
-		drone.move(0, 0, 1, 0);
-	}
-	
 	public void hover() throws IOException {
 		drone.hover();
+	}
+	
+	public void ascend() throws IOException{
+		drone.move(0, 0, 1, 0);
 	}
 	
 	public void descend() throws IOException {

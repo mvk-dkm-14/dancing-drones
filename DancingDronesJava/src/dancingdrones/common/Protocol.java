@@ -63,15 +63,16 @@ public class Protocol {
 	 * @author Rodoo
 	 */
 	public static class Size {
-		public static final byte INIT		=	1;
-		public static final byte CONNECT	=	2;
+		public static final byte INIT			=	1;
+		public static final byte CONNECT		=	2;
 		public static final byte ID			=	2;
 		public static final byte C_MOVE		=	17;
+		public static final byte C_HEIGHT		=	6;
 		public static final byte C_TAKEOFF	=	2;
 		public static final byte C_LAND		=	2;
 		public static final byte C_EMERGENCY	=	2;
 		public static final byte C_TESTFLIGHT	=	2;
-		public static final byte QUIT		=	1;
+		public static final byte QUIT			=	1;
 	}
 	
 	/**
@@ -121,7 +122,8 @@ public class Protocol {
 		public static final byte C_LAND 		=	0x02; // 0x02, 0000 0010
 		public static final byte C_MOVE		=	0x03; // 0x03, 0000 0101
 		public static final byte C_EMERGENCY	=	0x04; // 0x04, 0000 0100
-		public static final byte C_TESTFLIGHT	=	0x05; // 0x05, 0000 0101 
+		public static final byte C_TESTFLIGHT	=	0x05; // 0x05, 0000 0101
+		public static final byte C_HEIGHT		=	0x06; // 0x06, 0000 0110
 	}
 	
 	/**
@@ -163,6 +165,9 @@ public class Protocol {
 				break;
 			case(Value.C_MOVE):		
 				size = Size.C_MOVE;		
+				break;
+			case(Value.C_HEIGHT):		
+				size = Size.C_HEIGHT;		
 				break;
 			case(Value.C_LAND):		
 				size = Size.C_LAND;		// All drones
@@ -251,8 +256,18 @@ public class Protocol {
 					.putFloat(11, vs)	// Data
 					.putFloat(15, as)	// Data
 					.array();			// return the array
-
 	}
+
+	public static byte[] sendTargetHeight(int id, int height) {
+		return ByteBuffer
+				.allocate(6)		// Allocate the array
+				.put(0, (byte)(Value.T_CONTROL + Value.S_D_SINGLE + Value.C_HEIGHT))	// Header
+				.put(1, (byte)id)	// Drone ID
+				.putInt(2, height)	// Data
+				.array();
+	}
+
+	
 	
 	
 // ======================================================== //
