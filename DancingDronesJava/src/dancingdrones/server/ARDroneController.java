@@ -159,7 +159,13 @@ public class ARDroneController implements NavDataListener, DroneStatusChangeList
 	}
 	
 	public void setTargetHeight(int targetHeight) {
+		Settings.printDebug("set target height called with percentage: " + targetHeight);
+		if (targetHeight < 101) {
+			targetHeight = targetHeight * 20;
+			targetHeight += 500;
+		}
 		this.targetHeight = targetHeight;
+		Settings.printDebug("set target height actual to: " + targetHeight);
 		
 	}
 	

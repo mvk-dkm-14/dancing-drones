@@ -13,7 +13,16 @@ public class Settings {
 	public static final int 	READ_UPDATE_DELAY_MS 	= 5;
 	
 	
-	
+	public static final String byteArrayToString(byte[] ba){
+		StringBuilder s = new StringBuilder();
+		s.append("[");
+		for (Byte b : ba){
+			s.append(b);
+			s.append(",");
+		}
+		s.setCharAt(s.length() - 1,']');
+		return s.toString();
+	}
 	public static final void printDebug(String message) {
 		System.out.println("[DEBUG] " + message); }
 	public static final void printInfo(String message) {
