@@ -32,13 +32,13 @@ public class DroneShow {
 		return tmp;
 	}
 	public class DroneCommand {
-		private Time timing;
-		private Protocol.Value command;
+		private int timing;
+		private byte[] command;
 		private DroneCommand next;
 		
-		public DroneCommand(Time timing, Protocol.Value command, DroneCommand next) {
+		public DroneCommand(int time, byte[] command, DroneCommand next) {
 			this.command = command;
-			this.timing = timing;
+			this.timing = time;
 			this.next = next;
 		}
 	}
