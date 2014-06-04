@@ -135,7 +135,7 @@ public class DroneServer {
 						case(Protocol.Value.C_HEIGHT):
 							// At the moment only receives a target height, in percentage of max height
 							// Second byte is ID and third is Data (height int 0-100)
-							drones.get(p[Protocol.Index.DATA_OFFSET]-1).setTargetHeight(ByteBuffer.allocate(4).getInt(2));
+							drones.get(p[Protocol.Index.DATA_OFFSET]-1).setTargetHeight(ByteBuffer.wrap(p).getInt(2));
 							break;
 						case(Protocol.Value.C_TAKEOFF):
 							Settings.printInfo("TakeOff!");
